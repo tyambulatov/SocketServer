@@ -2,11 +2,11 @@ package org.example.requestProcessor;
 
 import org.example.httpRequest.HttpRequest;
 
-public class PathRequestRule implements RequestRule {
+public class PathStartsRule implements RequestRule {
 
     private final String pathPart;
 
-    public PathRequestRule(String pathPart) {
+    public PathStartsRule(String pathPart) {
         this.pathPart = pathPart;
     }
 

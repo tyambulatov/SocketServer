@@ -13,18 +13,19 @@ import org.example.service.impl.UsersServiceImpl;
 
 public class UsersRequestProcessor implements ReqProcessor {
     UsersService usersService = new UsersServiceImpl();
+    // TODO: выпилить поля
     UserResponse userResponse;
     HttpRequest httpRequest;
 
     @Override
-    public void process(HttpRequest httpRequest) throws IOException {
+    public void process(HttpRequest httpRequest) {
         this.httpRequest = httpRequest;
         this.userResponse = new UserResponse(httpRequest);
 
         switch (httpRequest.getMethod()) {
             case GET -> getRequest();
             case POST -> postRequest();
-            default -> throw new IOException("Incorrect user request");
+            default -> throw new IllegalArgumentException("Incorrect user request");
         }
     }
 
@@ -32,6 +33,8 @@ public class UsersRequestProcessor implements ReqProcessor {
         List<User> userList = usersService.getAllUsers();
         if (!userList.isEmpty()) {
             userResponse.returnEntities(Response.Status.OK, userList);
+        } else {
+            userResponse.returnEmptyBody(Response.Status.NO_CONTENT);
         }
     }
 

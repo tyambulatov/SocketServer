@@ -5,5 +5,5 @@ import org.example.httpRequest.HttpRequest;
 import java.io.IOException;
 
 public interface ReqProcessor {
-    void process(HttpRequest httpRequest) throws IOException;
+    void process(HttpRequest httpRequest);
 }

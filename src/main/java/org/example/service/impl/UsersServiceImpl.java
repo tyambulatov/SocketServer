@@ -1,14 +1,14 @@
 package org.example.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.example.dto.UserForm;
-import org.example.exception.UserNotFound;
+import org.example.exception.NotFoundException;
 import org.example.model.User;
 import org.example.repository.Repository;
 import org.example.repository.impl.UserRepositoryImpl;
 import org.example.service.UsersService;
-
-import java.util.List;
-import java.util.Optional;
 
 public class UsersServiceImpl implements UsersService {
     private final Repository<User, Long, UserForm> userRepository = new UserRepositoryImpl();
@@ -24,13 +24,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public User getUser(Long id) {
-        Optional<User> foundUser = userRepository.findById(id);
-        User answer = null;
-        if (foundUser.isPresent()) {
-            answer = foundUser.get();
-        }
-        return answer;
+    public User getUser(Long id) throws NotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
     }
 
     @Override
@@ -40,7 +36,7 @@ public class UsersServiceImpl implements UsersService {
             User updatedUser = new User(userId, userForm.login(), userForm.password());
             userRepository.update(updatedUser);
         } else {
-            throw new UserNotFound();
+            throw new NotFoundException();
         }
     }
 

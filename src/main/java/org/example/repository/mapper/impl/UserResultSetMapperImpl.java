@@ -5,6 +5,7 @@ import org.example.repository.mapper.UserResultSetMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class UserResultSetMapperImpl implements UserResultSetMapper {
 
@@ -17,7 +18,8 @@ public class UserResultSetMapperImpl implements UserResultSetMapper {
                     row.getString(3)
             );
         } catch (SQLException e) {
-            System.err.println("Error parsing user from ResultSet");;
+            System.err.println("Error parsing user from ResultSet: " + e.getMessage());
+            e.printStackTrace(System.err);
             return null;
         }
     }

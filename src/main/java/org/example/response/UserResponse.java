@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class UserResponse implements ResponseProcessor<User> {
+
+    // TODO: выпилить поля
     BufferedWriter bufferedWriter;
     HttpRequest httpRequest;
 
@@ -47,7 +49,7 @@ public class UserResponse implements ResponseProcessor<User> {
     }
 
     private String statusLineBuilder(Response.Status statusCode) {
-        return httpRequest.getProtocol() + " " + statusCode.getStatusCode() + " " + statusCode.toString() + "\r\n";
+        return httpRequest.getProtocol() + " " + statusCode.getStatusCode() + " " + statusCode + "\r\n";
     }
 
     /**
@@ -55,6 +57,7 @@ public class UserResponse implements ResponseProcessor<User> {
      * @return name of first accept type
      */
     private String headersBuilder() {
+        // "Content-Type: <то, что передал клиент в Accept>"
         return httpRequest.getAcceptTypes().get(0) + "\r\n";
     }
     //TODO add different representations of body depending on type

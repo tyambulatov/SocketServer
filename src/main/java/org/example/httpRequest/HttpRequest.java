@@ -93,6 +93,7 @@ public class HttpRequest {
         }
     }
 
+    // TODO: hadBody
     public boolean haveBody() {
         return headers.containsKey("Content-Length") && headers.containsKey("Content-Type");
     }

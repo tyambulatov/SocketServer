@@ -13,17 +13,13 @@ public class CompositeRequestProcessor implements ReqProcessor {
     }
 
     @Override
-    public void process(HttpRequest httpRequest){
-        try {
-            ReqProcessor processor = processingRules.entrySet().stream()
-                    .filter(r -> r.getKey().matches(httpRequest))
-                    .findFirst()
-                    .orElseThrow()
-                    .getValue();
+    public void process(HttpRequest httpRequest) {
+        ReqProcessor processor = processingRules.entrySet().stream()
+                .filter(r -> r.getKey().matches(httpRequest))
+                .findFirst()
+                .orElseThrow()
+                .getValue();
 
-            processor.process(httpRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        processor.process(httpRequest);
     }
 }

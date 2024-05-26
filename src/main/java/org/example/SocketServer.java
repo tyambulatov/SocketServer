@@ -1,31 +1,36 @@
 package org.example;
 
-import org.example.exception.FailedToAcceptConnection;
-import org.example.exception.ServerSocketNotCreated;
-import org.example.requestProcessor.CompositeRequestProcessor;
-import org.example.httpRequest.HttpRequest;
-import org.example.requestProcessor.PathRequestRule;
-import org.example.requestProcessor.user.SingleUserRequestProcessor;
-import org.example.requestProcessor.user.UsersRequestProcessor;
-
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
+
+import org.example.exception.FailedToAcceptConnection;
+import org.example.exception.ServerSocketNotCreated;
+import org.example.httpRequest.HttpRequest;
+import org.example.requestProcessor.CompositeRequestProcessor;
+import org.example.requestProcessor.ExceptionHandlingProcessor;
+import org.example.requestProcessor.PathRegexRule;
+import org.example.requestProcessor.PathStartsRule;
+import org.example.requestProcessor.ReqProcessor;
+import org.example.requestProcessor.user.SingleUserRequestProcessor;
+import org.example.requestProcessor.user.UsersRequestProcessor;
 
 public class SocketServer extends Thread {
 
     ServerSocket serverSocket;
 
-    CompositeRequestProcessor processor = new CompositeRequestProcessor(
-            Map.of(
-                    new PathRequestRule("/users"), new CompositeRequestProcessor(
-                            Map.of(
-                                    new PathRequestRule("/users/\\d"), new SingleUserRequestProcessor(),
-                                    new PathRequestRule("/users"), new UsersRequestProcessor()
-                            )
-                    ),
-                    new PathRequestRule("/products"), new CompositeRequestProcessor(Map.of())
+    ReqProcessor processor = new ExceptionHandlingProcessor(
+            new CompositeRequestProcessor(
+                    Map.of(
+                            new PathStartsRule("/users"), new CompositeRequestProcessor(
+                                    Map.of(
+                                            new PathRegexRule("/users/\\d"), new SingleUserRequestProcessor(),
+                                            new PathStartsRule("/users"), new UsersRequestProcessor()
+                                    )
+                            ),
+                            new PathStartsRule("/products"), new CompositeRequestProcessor(Map.of())
+                    )
             )
     );
 

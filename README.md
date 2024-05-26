@@ -15,7 +15,7 @@ Simple Java server build on ServerSocket and Socket
 
 ```docker compose up -d```
 
-4. Run a SQL script ```script.sql```
+4. Run a SQL script ```script.sql``` Можно убрать создание схемы в docker-compose.yml
 
 ```cd sql/```
 

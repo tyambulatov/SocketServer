@@ -13,17 +13,17 @@ import java.util.List;
 
 public class SingleUserRequestProcessor implements ReqProcessor {
     UsersService usersService = new UsersServiceImpl();
+    // TODO: выпилить поля
     UserResponse userResponse;
     HttpRequest httpRequest;
 
     @Override
-    public void process(HttpRequest httpRequest) throws IOException {
+    public void process(HttpRequest httpRequest) {
         this.httpRequest = httpRequest;
         this.userResponse = new UserResponse(httpRequest);
-
         switch (httpRequest.getMethod()) {
             case GET -> getRequest();
-            default -> throw new IOException("Invalid http method name");
+            default -> throw new IllegalArgumentException("Invalid http method name");
         }
     }
 

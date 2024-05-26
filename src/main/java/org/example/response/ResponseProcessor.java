@@ -5,6 +5,11 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 public interface ResponseProcessor<T> {
-    public void returnEntities(Response.Status status, List<T> entities);
-    public void saveEntity(T entity);
+    void returnEntities(Response.Status status, List<T> entities);
+
+    default void returnEmptyBody(Response.Status status) {
+        // TODO
+    };
+
+    void saveEntity(T entity);
 }
