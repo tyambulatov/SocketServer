@@ -3,15 +3,17 @@ package org.example.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.example.dto.UserForm;
 import org.example.exception.NotFoundException;
 import org.example.model.User;
 import org.example.repository.Repository;
-import org.example.repository.impl.UserRepositoryImpl;
-import org.example.service.UsersService;
+import org.example.service.UserService;
 
-public class UsersServiceImpl implements UsersService {
-    private final Repository<User, Long, UserForm> userRepository = new UserRepositoryImpl();
+public class UserServiceImpl implements UserService {
+    private final Repository<User, Long> userRepository;
+
+    public UserServiceImpl(Repository<User, Long> userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -19,8 +21,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void addUser(UserForm userForm) {
-        userRepository.save(userForm);
+    public void addUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
@@ -30,10 +32,10 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void updateUser(Long userId, UserForm userForm) {
+    public void updateUser(Long userId, User user) {
         Optional<User> userToUpdate = userRepository.findById(userId);
         if (userToUpdate.isPresent()) {
-            User updatedUser = new User(userId, userForm.login(), userForm.password());
+            User updatedUser = new User(userId, user.login(), user.password());
             userRepository.update(updatedUser);
         } else {
             throw new NotFoundException();

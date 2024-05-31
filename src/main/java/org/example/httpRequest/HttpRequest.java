@@ -11,28 +11,27 @@ import java.util.*;
 
 public class HttpRequest {
 
-    public String getProtocol() {
-        return protocol;
-    }
-
     public enum Method {
         GET,
         PUT,
         POST,
-        DELETE;
-    }
+        DELETE
 
+    }
     private Method method;
     private String protocol;
     private String path;
-    private final Map<String, String> parameters = new HashMap<>();
-    private final Map<String, String> headers = new HashMap<>();
+    private final Map<String, String> parameters;
+    private final Map<String, String> headers;
     private String body;
     private final Socket socket;
     private BufferedReader bufferedReader;
 
     public HttpRequest(Socket socket) {
+        this.parameters = new HashMap<>();
+        this.headers = new HashMap<>();
         this.socket = socket;
+
         List<String> requestHeadLines = parseRequestHeadLines();
         checkRequestHeadNotEmpty(requestHeadLines);
         parse(requestHeadLines);
@@ -87,14 +86,13 @@ public class HttpRequest {
     }
 
     private void requestHeadersParsing(List<String> requestLines) {
-        for (int i = 0; i < requestLines.size(); i++) {
-            String[] headerParts = requestLines.get(i).split(": ");
+        for (String requestLine : requestLines) {
+            String[] headerParts = requestLine.split(": ");
             headers.put(headerParts[0], headerParts[1]);
         }
     }
 
-    // TODO: hadBody
-    public boolean haveBody() {
+    public boolean hadBody() {
         return headers.containsKey("Content-Length") && headers.containsKey("Content-Type");
     }
 
@@ -115,7 +113,7 @@ public class HttpRequest {
     }
 
     public String getBody() {
-        if (body == null && haveBody()) {
+        if (body == null && hadBody()) {
             char[] buffer = new char[2048];
             int contentLength = Integer.parseInt(headers.get("Content-Length"));
             try {
@@ -132,8 +130,13 @@ public class HttpRequest {
         return headers.get("Content-Type");
     }
 
-    public List<String> getAcceptTypes() {
-        return Arrays.stream(headers.get("Accept").split(", ")).toList();
+    public List<String> getAcceptHeaders() {
+        String[] f = headers.get("Accept").split(",");
+        return Arrays.stream(f).toList();
+    }
+
+    public String getProtocol() {
+        return protocol;
     }
 
     public Socket getSocket() {
@@ -143,13 +146,14 @@ public class HttpRequest {
     @Override
     public String toString() {
         getBody();
-        return "HttpRequest{\r\n" +
+        return "HttpRequest{" +
                 "method=" + method +
-                ",\r\nprotocol='" + protocol + '\'' +
-                ",\r\npath='" + path + '\'' +
-                ",\r\nparameters=" + parameters +
-                ",\r\nheaders=" + headers +
-                ",\r\nbody=" + body +
-                "}\r\n";
+                ", protocol='" + protocol + '\'' +
+                ", path='" + path + '\'' +
+                ", parameters=" + parameters +
+                ", headers=" + headers +
+                ", body='" + getBody() + '\'' +
+                ", socket=" + socket +
+                '}';
     }
 }

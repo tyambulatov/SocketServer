@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 public class ConnectionManagerImpl implements ConnectionManager {
@@ -20,7 +21,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
         try {
             dbProperties.load(new BufferedReader(
-                    new InputStreamReader(Main.class.getResourceAsStream("/db.properties"))));
+                    new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/db.properties")))));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

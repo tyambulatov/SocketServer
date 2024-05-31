@@ -1,15 +1,10 @@
 package org.example.response;
 
 import jakarta.ws.rs.core.Response;
+import org.example.httpRequest.HttpRequest;
 
-import java.util.List;
+public interface    ResponseProcessor {
+    void returnBody(HttpRequest httpRequest, Response.Status status, Object anything);
 
-public interface ResponseProcessor<T> {
-    void returnEntities(Response.Status status, List<T> entities);
-
-    default void returnEmptyBody(Response.Status status) {
-        // TODO
-    };
-
-    void saveEntity(T entity);
+    void returnEmptyBody(HttpRequest httpRequest, Response.Status status);
 }

@@ -1,8 +1,8 @@
 package org.example.requestProcessor;
 
 import org.example.httpRequest.HttpRequest;
+import org.example.requestProcessor.requestRule.RequestRule;
 
-import java.io.IOException;
 import java.util.Map;
 
 public class CompositeRequestProcessor implements ReqProcessor {

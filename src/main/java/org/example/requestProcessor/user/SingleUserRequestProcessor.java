@@ -4,32 +4,37 @@ import jakarta.ws.rs.core.Response;
 import org.example.httpRequest.HttpRequest;
 import org.example.model.User;
 import org.example.requestProcessor.ReqProcessor;
-import org.example.response.UserResponse;
-import org.example.service.UsersService;
-import org.example.service.impl.UsersServiceImpl;
+import org.example.response.ResponseProcessor;
+import org.example.service.UserService;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class SingleUserRequestProcessor implements ReqProcessor {
-    UsersService usersService = new UsersServiceImpl();
-    // TODO: выпилить поля
-    UserResponse userResponse;
-    HttpRequest httpRequest;
+
+    private final UserService usersService;
+    private final ResponseProcessor responseProcessor;
+
+    public SingleUserRequestProcessor(UserService usersService, ResponseProcessor responseProcessor) {
+        this.usersService = usersService;
+        this.responseProcessor = responseProcessor;
+    }
 
     @Override
     public void process(HttpRequest httpRequest) {
-        this.httpRequest = httpRequest;
-        this.userResponse = new UserResponse(httpRequest);
-        switch (httpRequest.getMethod()) {
-            case GET -> getRequest();
-            default -> throw new IllegalArgumentException("Invalid http method name");
+        if (Objects.requireNonNull(httpRequest.getMethod()) == HttpRequest.Method.GET) {
+            getRequest(httpRequest);
+        } else {
+            throw new IllegalArgumentException("Invalid request");
         }
     }
 
-    private void getRequest() {
+    private void getRequest(HttpRequest httpRequest) {
         Long id = Long.valueOf(httpRequest.getPath().split("/")[2]);
         User user = usersService.getUser(id);
-        userResponse.returnEntities(Response.Status.OK, List.of(user));
+        responseProcessor.returnBody(httpRequest, Response.Status.OK, List.of(user));
     }
+
+//    users/123/cart/1
+
 }

@@ -1,4 +1,4 @@
-package org.example.requestProcessor;
+package org.example.requestProcessor.requestRule;
 
 import java.util.regex.Pattern;
 

@@ -2,11 +2,9 @@ package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
 import org.example.db.impl.ConnectionManagerImpl;
-import org.example.dto.UserForm;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.example.repository.mapper.UserResultSetMapper;
-import org.example.repository.mapper.impl.UserResultSetMapperImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,13 +28,12 @@ public class UserRepositoryImpl implements UserRepository {
     //language=SQL
     private static final String SQL_DELETE = "delete from account where id=? ";
 
+    private static final UserResultSetMapper userResultSetMapper = new UserResultSetMapper();
 
-    private final UserResultSetMapper userResultSetMapper = new UserResultSetMapperImpl();
-
-    private final ConnectionManager connectionManager = new ConnectionManagerImpl();
+    private static final ConnectionManager connectionManager = new ConnectionManagerImpl();
 
     @Override
-    public User save(UserForm user) {
+    public User save(User user) {
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_INSERT)) {
 

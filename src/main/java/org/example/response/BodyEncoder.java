@@ -1,4 +1,4 @@
-package org.example.requestProcessor;
+package org.example.response;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
