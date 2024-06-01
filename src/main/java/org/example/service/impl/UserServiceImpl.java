@@ -1,7 +1,6 @@
 package org.example.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.example.exception.NotFoundException;
 import org.example.model.User;
@@ -33,13 +32,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(Long userId, User user) {
-        Optional<User> userToUpdate = userRepository.findById(userId);
-        if (userToUpdate.isPresent()) {
+        if (isUserInRepository(userId)) {
             User updatedUser = new User(userId, user.login(), user.password());
             userRepository.update(updatedUser);
         } else {
             throw new NotFoundException();
         }
+    }
+
+    private boolean isUserInRepository(Long userId) {
+        return userRepository.findById(userId).isPresent();
     }
 
     @Override

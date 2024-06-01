@@ -3,6 +3,8 @@ package org.example.requestProcessor.user;
 import java.util.List;
 
 import jakarta.ws.rs.core.Response;
+import org.example.exception.MethodNotAllowedException;
+import org.example.exception.NoContentException;
 import org.example.httpRequest.HttpRequest;
 import org.example.model.User;
 import org.example.requestProcessor.ReqProcessor;
@@ -24,37 +26,30 @@ public class UsersRequestProcessor implements ReqProcessor {
         switch (httpRequest.getMethod()) {
             case GET -> getRequest(httpRequest);
             case POST -> postRequest(httpRequest);
-            default -> throw new IllegalArgumentException("Invalid request");
+            default -> throw new MethodNotAllowedException();
         }
     }
 
     private void getRequest(HttpRequest httpRequest) {
         List<User> userList = userService.getAllUsers();
+
         if (!userList.isEmpty()) {
             responseProcessor.returnBody(httpRequest, Response.Status.OK, userList);
         } else {
-            responseProcessor.returnEmptyBody(httpRequest, Response.Status.NO_CONTENT);
+            throw new NoContentException();
         }
     }
 
     private void postRequest(HttpRequest httpRequest) {
-        if (httpRequest.hadBody()) {
+//        if (httpRequest.hadBody()) {
 //            UserForm userForm = userFormParsing(httpRequest.getBody());
 //            usersService.addUser(userForm);
-        } else {
+//        } else {
             // There is no body to create User.
             // Return response that no body was received.
-        }
+//        }
     }
 
-    // path
-    // /users - GET all users
-    // /users/123 - GET user id=123
-
-    // /users → GET / POST
-
-    // GET
-    // /users, /products, /transactions
 
 //    GET domain.com/my-api/users -> список юзеров
 //    POST domain.com/my-api/users + body -> создать нового

@@ -35,6 +35,4 @@ public class SingleUserRequestProcessor implements ReqProcessor {
         responseProcessor.returnBody(httpRequest, Response.Status.OK, List.of(user));
     }
 
-//    users/123/cart/1
-
 }

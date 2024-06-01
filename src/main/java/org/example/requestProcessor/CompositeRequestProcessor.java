@@ -1,5 +1,6 @@
 package org.example.requestProcessor;
 
+import org.example.exception.NotFoundException;
 import org.example.httpRequest.HttpRequest;
 import org.example.requestProcessor.requestRule.RequestRule;
 
@@ -17,7 +18,7 @@ public class CompositeRequestProcessor implements ReqProcessor {
         ReqProcessor processor = processingRules.entrySet().stream()
                 .filter(r -> r.getKey().matches(httpRequest))
                 .findFirst()
-                .orElseThrow()
+                .orElseThrow(NotFoundException::new)
                 .getValue();
 
         processor.process(httpRequest);

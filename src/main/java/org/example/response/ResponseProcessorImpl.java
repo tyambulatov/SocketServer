@@ -22,10 +22,8 @@ public class ResponseProcessorImpl implements ResponseProcessor {
     }
 
     @Override
-    public void returnEmptyBody(HttpRequest httpRequest, Response.Status status) {
-        final Object errorBody = "Error";
-        HttpResponse httpResponse = new HttpResponse(allowedMimeTypes, httpRequest, status, errorBody);
-        writeResponse(httpRequest, httpResponse.toByteArray());
+    public void returnNoBody(HttpRequest httpRequest, Response.Status status) {
+        returnBody(httpRequest, status, null);
     }
 
     private void writeResponse(HttpRequest httpRequest, byte[] response) {

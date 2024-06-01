@@ -7,23 +7,14 @@ Simple Java server build on ServerSocket and Socket
 
 ```git clone https://github.com/tyambulatov/SocketServer.git```
 
-2. Locate Docker Compose file
+2. Build a Docker Compose 
 
 ```cd docker/```
-
-3. Build a PostgreSQL container
-
 ```docker compose up -d```
 
-4. Run a SQL script ```script.sql``` Можно убрать создание схемы в docker-compose.yml
+3. Start server by running ```Main.java``` located in directory
 
-```cd sql/```
-
-5. Start server by running ```Main.java```
-
-```cd ../..```
-
-```cd src/main/java/org/example/```
+```cd ../src/main/java/org/example/```
 
 ## Features
 

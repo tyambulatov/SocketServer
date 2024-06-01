@@ -1,7 +1,7 @@
 package org.example.httpRequest;
 
-import org.example.exception.FailedToReadRequestBody;
-import org.example.exception.FailedToReadRequestHead;
+import org.example.exception.BadRequestException;
+import org.example.exception.LengthRequiredException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,13 +46,13 @@ public class HttpRequest {
                 stringList.add(line);
             }
         } catch (IOException e) {
-            throw new FailedToReadRequestHead(e);
+            throw new BadRequestException(e);
         }
         return stringList;
     }
 
     private void checkRequestHeadNotEmpty(List<String> httpRequest) {
-        if (httpRequest.isEmpty()) throw new IllegalArgumentException("Empty request");
+        if (httpRequest.isEmpty()) throw new BadRequestException();
     }
 
     private void parse(List<String> requestLines) {
@@ -92,10 +92,6 @@ public class HttpRequest {
         }
     }
 
-    public boolean hadBody() {
-        return headers.containsKey("Content-Length") && headers.containsKey("Content-Type");
-    }
-
     public Method getMethod() {
         return method;
     }
@@ -113,17 +109,28 @@ public class HttpRequest {
     }
 
     public String getBody() {
-        if (body == null && hadBody()) {
-            char[] buffer = new char[2048];
-            int contentLength = Integer.parseInt(headers.get("Content-Length"));
-            try {
-                int charsRead = bufferedReader.read(buffer, 0, contentLength);
-                body = new String(buffer, 0, charsRead);
-            } catch (IOException e) {
-                throw new FailedToReadRequestBody(e);
-            }
+        if (body == null) {
+            hadBody();
+            readBody();
         }
         return body;
+    }
+
+    private void hadBody() {
+        if (!(headers.containsKey("Content-Length") && headers.containsKey("Content-Type"))) {
+            throw new LengthRequiredException();
+        }
+    }
+
+    private void readBody() {
+        char[] buffer = new char[2048];
+        int contentLength = Integer.parseInt(headers.get("Content-Length"));
+        try {
+            int charsRead = bufferedReader.read(buffer, 0, contentLength);
+            body = new String(buffer, 0, charsRead);
+        } catch (IOException e) {
+            throw new BadRequestException(e);
+        }
     }
 
     public String getContentType() {
@@ -145,7 +152,6 @@ public class HttpRequest {
 
     @Override
     public String toString() {
-        getBody();
         return "HttpRequest{" +
                 "method=" + method +
                 ", protocol='" + protocol + '\'' +

@@ -2,6 +2,7 @@ package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
 import org.example.db.impl.ConnectionManagerImpl;
+import org.example.exception.InternalServerErrorException;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.example.repository.mapper.UserResultSetMapper;
@@ -48,7 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
                 return savedUser;
             }
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw new InternalServerErrorException(e);
         }
     }
 
@@ -67,7 +68,7 @@ public class UserRepositoryImpl implements UserRepository {
                 return result;
             }
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw new InternalServerErrorException(e);
         }
     }
 
@@ -87,7 +88,7 @@ public class UserRepositoryImpl implements UserRepository {
                 return users;
             }
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw new InternalServerErrorException(e);
         }
     }
 
@@ -109,7 +110,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw new InternalServerErrorException(e);
         }
     }
 
@@ -123,7 +124,7 @@ public class UserRepositoryImpl implements UserRepository {
             return statement.executeUpdate() == 1;
 
         } catch (SQLException e) {
-            throw new IllegalStateException(e);
+            throw new InternalServerErrorException(e);
         }
     }
 }

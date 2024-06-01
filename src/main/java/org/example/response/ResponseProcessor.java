@@ -6,5 +6,5 @@ import org.example.httpRequest.HttpRequest;
 public interface    ResponseProcessor {
     void returnBody(HttpRequest httpRequest, Response.Status status, Object anything);
 
-    void returnEmptyBody(HttpRequest httpRequest, Response.Status status);
+    void returnNoBody(HttpRequest httpRequest, Response.Status status);
 }

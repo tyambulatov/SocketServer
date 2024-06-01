@@ -10,4 +10,4 @@ values ('login1', 'password1'),
     ('login3', 'password3'),
     ('login4', 'password4'),
     ('login5', 'password5'),
-    ('login6', 'password6'),
+    ('login6', 'password6')

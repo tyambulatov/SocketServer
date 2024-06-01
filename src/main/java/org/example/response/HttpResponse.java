@@ -4,6 +4,7 @@ import jakarta.ws.rs.core.Response;
 import org.example.httpRequest.HttpRequest;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -24,20 +25,15 @@ public class HttpResponse {
     }
 
     private String setContentType(List<String> allowedMimeTypes, HttpRequest httpRequest) {
-        String defaultAcceptHeader = "text/html"; // Default MIME type
-        String acceptHeader = httpRequest.getAcceptHeaders().get(0);
+        String defaultContentType = "text/html";
+        List<String> acceptHeaders = httpRequest.getAcceptHeaders();
 
-        if (acceptHeader == null) {
-            acceptHeader = defaultAcceptHeader;
-        } else if (!allowedMimeTypes.contains(acceptHeader)) {
-            throw new IllegalArgumentException("Unsupported MIME type: " + acceptHeader);
+        if (acceptHeaders.isEmpty() || acceptHeaders.contains("*/*")) {
+            return defaultContentType;
         }
 
-        if (acceptHeader.equals("*/*")) {
-            acceptHeader = defaultAcceptHeader;
-        }
-
-        return acceptHeader;
+        return acceptHeaders.stream().filter(allowedMimeTypes::contains).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported MIME types: " + acceptHeaders));
     }
 
     private Map<String, String> setHeaders() {
@@ -47,21 +43,30 @@ public class HttpResponse {
     public byte[] toByteArray() {
         byte[] statusLineBytes = buildStatusLine();
         byte[] headersBytes = buildHeadersLines();
-        byte[] bodyBytes = BodyBuilder.build(contentType, body);
+        int responseLengthBytes = statusLineBytes.length + headersBytes.length + 4;
 
-        byte[] result = new byte[statusLineBytes.length + headersBytes.length + 4 + bodyBytes.length];
-
-        ByteBuffer byteBuffer = ByteBuffer.wrap(result);
-        byteBuffer.put(statusLineBytes)
-                .put(headersBytes)
-                .put("\r\n".getBytes())
-                .put(bodyBytes);
+        byte[] result;
+        if (body == null) {
+            result = new byte[responseLengthBytes];
+            ByteBuffer byteBuffer = ByteBuffer.wrap(result);
+            byteBuffer.put(statusLineBytes)
+                    .put(headersBytes)
+                    .put("\r\n".getBytes(StandardCharsets.UTF_8));
+        } else {
+            byte[] bodyBytes = BodyBuilder.build(contentType, body);
+            result = new byte[responseLengthBytes + bodyBytes.length];
+            ByteBuffer byteBuffer = ByteBuffer.wrap(result);
+            byteBuffer.put(statusLineBytes)
+                    .put(headersBytes)
+                    .put("\r\n".getBytes(StandardCharsets.UTF_8))
+                    .put(bodyBytes);
+        }
 
         return  result;
     }
 
     private byte[] buildStatusLine() {
-        return (protocol + " " + status.getStatusCode() + " " + status + "\r\n").getBytes();
+        return (protocol + " " + status.getStatusCode() + " " + status + "\r\n").getBytes(StandardCharsets.UTF_8);
     }
 
     private byte[] buildHeadersLines() {
@@ -73,6 +78,6 @@ public class HttpResponse {
                     .append("\r\n");
         }
 
-        return stringBuilder.toString().getBytes();
+        return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
     }
 }

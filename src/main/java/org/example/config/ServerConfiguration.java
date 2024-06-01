@@ -16,7 +16,7 @@ import org.example.service.impl.UserServiceImpl;
 import java.util.List;
 import java.util.Map;
 
-public class ProcessorConfiguration {
+public class ServerConfiguration {
     private static final UserService userService = new UserServiceImpl(new UserRepositoryImpl());
 
     private static final List<String> allowedMimeTypes = List.of("*/*", "application/json", "text/html");
@@ -28,13 +28,13 @@ public class ProcessorConfiguration {
                     Map.of(
                             new PathStartsRule("/users"), new CompositeRequestProcessor(
                                     Map.of(
-                                            new PathRegexRule("/users/\\d+$"), new SingleUserRequestProcessor(
-                                                    userService,
-                                                    responseProcessor),
                                             new PathRegexRule("/users$"), new UsersRequestProcessor(
                                                     userService,
                                                     responseProcessor
-                                            )
+                                            ),
+                                            new PathRegexRule("/users/\\d+$"), new SingleUserRequestProcessor(
+                                                    userService,
+                                                    responseProcessor)
                                     )
                             ),
                             new PathStartsRule("/products"), new CompositeRequestProcessor(Map.of())
