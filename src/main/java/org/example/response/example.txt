@@ -1,0 +1,50 @@
+class User {
+    String login;
+    String email;
+    Set<Role> roles;
+}
+
+class Role {
+    String type;
+    Instant createdAt;
+}
+
+
+GET /users/1
+
+User("abc", "abd@mail.ru", setOf(Role("ADMIN", 2022-01-01), Role("USER", 2020-01-01)) - POJO
+
+
+application/json
+{
+    "login": "abc",
+    "email": "abd@mail.ru",
+    "roles": [
+        {"type": "ADMIN", "createdAt": "2022-01-01"},
+        {"type": "USER", "createdAt": "2020-01-01"}
+    ]
+}
+
+application/xml
+<user>
+    <login>abc</login>
+    <email>abd@mail.ru</email>
+    <roles>
+        <role type='ADMIN' createdAt='2022-01-01'/>
+        <role type='USER' createdAt='2020-01-01'/>
+    </roles>
+</user>
+
+
+1) Берем User - reflection - getFields/getMethods - получаем либо сразу поля, либо геттеры/сеттеры
+1.5) Если xml - делаем тэг class.getSimpleName()
+2) forech поле/геттер
+    - если это примитив - просто <<пишем в строку field.getName, field.getValue(object)>>
+    - если это pojo - рекурсия к п.1
+
+
+
+GET http://myserver.com
+
+301
+Target-Url: https://myserver.com
